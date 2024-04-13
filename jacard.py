@@ -1,9 +1,9 @@
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 
-import nltk
-nltk.download('punkt')
-nltk.download('stopwords')
+# import nltk
+# nltk.download('punkt')
+# nltk.download('stopwords')
 
 def jaccard_similarity(text1, text2):
     tokens1 = set(word_tokenize(text1.lower()))
@@ -18,10 +18,3 @@ def jaccard_similarity(text1, text2):
     
     return intersection / union
 
-# Example texts
-text1 = "The cat sat on the mat."
-text2 = "A cat was sitting on the mat."
-
-# Calculate Jaccard Similarity
-similarity_score = jaccard_similarity(text1, text2)
-print(f"Jaccard Similarity: {similarity_score}")
