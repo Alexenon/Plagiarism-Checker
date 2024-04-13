@@ -75,9 +75,9 @@ def display_best_matches_results(uknown_data, data_comparation, first_n_matches)
     
     
 
-uknown_data = collect_uknown_data(4)
-data_comparation = collect_data_comparation(uknown_data)
-display_best_matches_results(uknown_data, data_comparation, 5)
+# uknown_data = collect_uknown_data(4)
+# data_comparation = collect_data_comparation(uknown_data)
+# display_best_matches_results(uknown_data, data_comparation, 5)
 
 
 
