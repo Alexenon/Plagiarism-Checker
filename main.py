@@ -9,7 +9,7 @@ from openpyxl import Workbook
 import os
 import customtkinter
 
-from check_plagiat import *
+from data_comparation import *
 from gui import App
 
 
