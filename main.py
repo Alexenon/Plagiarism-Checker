@@ -4,11 +4,13 @@
 
 import tkinter as tk
 from tkinter.filedialog import askopenfile
-from openpyxl import Workbook
+
 import customtkinter
 
 from PIL import Image
+
 from data_comparation import *
+from multiple_files_page import MultipleFilePage
 
 #######################################--DECLARING GLOBAL VARIABLES--#####################################
 
@@ -24,9 +26,6 @@ files_text = []
 # Variable to store duplicate sentences
 duplicates = []
 
-# Variable to store details of file and corresponding percentage
-data_list = []
-
 #######################################--GRAPHICAL USER INTERFACE--#######################################
 
 # Setting Color Theme
@@ -37,6 +36,10 @@ customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "gre
 # Create App Object
 # noinspection PyMethodMayBeStatic
 class App(customtkinter.CTk):
+    """
+    The UI for the entire Application
+    """
+
     def __init__(self):
         super().__init__()
 
@@ -64,7 +67,8 @@ class App(customtkinter.CTk):
                                                         text="COMPARE TWO FILES", command=self.two_file_page)
         self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
         self.sidebar_button_3 = customtkinter.CTkButton(self.sidebar_frame, text_color=("black", "white"),
-                                                        text="MULTIPLE COMPARE", command=self.multiple_file_page)
+                                                        text="MULTIPLE COMPARE",
+                                                        command=self.display_multiple_file_page)
         self.sidebar_button_3.grid(row=3, column=0, padx=20, pady=10)
         self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text_color=("black", "white"),
                                                             text="Appearance Mode:", anchor="w")
@@ -136,68 +140,13 @@ class App(customtkinter.CTk):
         textbox = customtkinter.CTkTextbox(frame)
         textbox.grid(row=3, column=0, columnspan=5, rowspan=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
 
-    # Multiple File Compare Page
-    def multiple_file_page(self):
-        frame = customtkinter.CTkFrame(self, width=500, corner_radius=10)
-        frame.grid_columnconfigure((0, 1, 2, 3, 4), weight=1)
-        frame.grid_rowconfigure((0, 1, 2, 3, 4), weight=1)
-        frame.grid(row=0, column=1, padx=(10, 20), pady=(20, 20), rowspan=4, columnspan=3, sticky="nsew")
-
-        frame2 = customtkinter.CTkFrame(frame)
-        frame2.grid_columnconfigure(0, weight=1)
-        frame2.grid_columnconfigure((1, 2), weight=1)
-        frame2.grid_columnconfigure(3, weight=1)
-        frame2.grid_columnconfigure(4, weight=1)
-        frame2.grid_columnconfigure(5, weight=1)
-        frame2.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9), weight=1)
-        frame2.grid(row=1, column=0, columnspan=5, rowspan=3, padx=20, pady=20, sticky="nsew")
-
-        button_text = tk.StringVar()
-        button_text.set("CHOOSE FILES")
-        button_1 = customtkinter.CTkButton(frame, text_color=("black", "white"), textvariable=button_text,
-                                           command=lambda: open_files(button_text))
-        button_1.grid(row=0, column=1, padx=20, pady=20, sticky="ew")
-
-        button_2 = customtkinter.CTkButton(frame, text_color=("black", "white"), text="Check Plagiarism",
-                                           command=lambda: multiple_comp_table(frame2))
-        button_2.grid(row=0, column=3, padx=20, pady=20, sticky="ew")
-
-        button_3 = customtkinter.CTkButton(frame, text_color=("black", "white"), text="Save Report",
-                                           command=lambda: save_report())
-        button_3.grid(row=4, column=3, padx=20, pady=20, sticky="ew")
-
-        button_4 = customtkinter.CTkButton(frame, text_color=("black", "white"), text="View Complete Report",
-                                           command=lambda: detailed_report())
-        button_4.grid(row=4, column=1, padx=20, pady=20, sticky="ew")
-
-
-def detailed_report():
-    report = tk.Toplevel()
-    report.title("Detailed Report")
-    report.geometry("1100x580")
-
-    columns = ('No', 'File1', 'File2', 'Similarity')
-
-    tree = tk.ttk.Treeview(report, columns=columns, show='headings')
-
-    # define headings
-    tree.heading('No', text='Sr No')
-    tree.heading('File1', text='File 1 Name')
-    tree.heading('File2', text='File 2 Name')
-    tree.heading('Similarity', text='Similarity Percentage')
-
-    global data_list
-
-    # add data to the treeview
-    for data in data_list:
-        tree.insert('', tk.END, values=data)
-
-    tree.pack(expand=True, fill='both')
-
-    report.mainloop()
+    def display_multiple_file_page(self):
+        multiple_file_page = MultipleFilePage(self)
+        multiple_file_page.grid(row=0, column=1, padx=(10, 20), pady=(20, 20), rowspan=4, columnspan=3, sticky="nsew")
 
 
 ##############################################--FUNCTIONS--###############################################
+
 
 def plagiarism_percentage(text1, text2):
     sentences1 = text1.split("\n")
@@ -289,69 +238,11 @@ def multiple_compare_result(textbox):
             textbox.insert("1.0", file_name1 + "\t and \t" + file_name2 + "\t  -  \t" + str(similarity) + "\n")
 
 
-def save_report():
-    global data_list
-    wb = Workbook()
-    ws = wb.active
-    for row in data_list:
-        ws.append(row)
-    wb.save('Report.xlsx')
-
-
 def limit(k):
     if k > 100:
         return 100
     else:
         return k
-
-
-files_with_unknown_data = {}
-
-
-def open_files(button_text):
-    button_text.set("Loading..")
-    global files
-    files.clear()
-    files = askopenfiles(mode='r', title="Choose Multiple Files", filetypes=[
-        ("All files", "*"),
-        ("text file", "*.txt"),
-        ("java File", "*.java"),
-        ("python file", "*.py"),
-        ("C file", "*.c"),
-        ("C++ file", "*.cpp")
-    ])
-
-    if files:
-        button_text.set((str(len(files)) + " Files Selected"))
-        files_with_unknown_data.clear()
-        for file in files:
-            file_name = file.name.split('/')[-1]  # Extract file name from the full path
-            files_with_unknown_data[file_name] = file.read()
-    else:
-        button_text.set("CHOOSE FILES")
-
-
-def multiple_comp_table(frame):
-    data_list.clear()
-    data_list.append(("Nr", "File", "Candidate", "Candidate File", "Similarity"))
-    for widget in frame.winfo_children():
-        widget.destroy()
-
-    data_comparation = collect_data_comparation(files_with_unknown_data)
-
-    for file_name, file_text in files_with_unknown_data.items():
-        matches = best_matches(data_comparation, file_name, 1)
-        for i, (candidate, candidateFileName, percent) in enumerate(matches, start=1):
-            data_list.append((i, file_name, candidate, candidateFileName, percent))
-
-    rows = len(data_list)
-    cols = 5
-    for i in range(rows):
-        for j in range(cols):
-            table = customtkinter.CTkEntry(frame, width=500, font=('Arial', 16))
-            table.grid(row=i, column=j, sticky="nsew")
-            table.insert(tk.END, data_list[i][j])
-    display_best_matches_results(files_with_unknown_data, data_comparation, 5)
 
 
 if __name__ == "__main__":
