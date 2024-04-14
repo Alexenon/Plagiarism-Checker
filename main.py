@@ -3,22 +3,17 @@
 #######################################--IMPORTING LIBRARIES--############################################
 
 import tkinter as tk
-from tkinter.messagebox import showinfo
-from tkinter.filedialog import askopenfile, askopenfiles, asksaveasfile, asksaveasfilename
+from tkinter.filedialog import askopenfile
 from openpyxl import Workbook
-import os
 import customtkinter
 
 from PIL import Image
 from data_comparation import *
-# from gui import App
-
-
 
 #######################################--DECLARING GLOBAL VARIABLES--#####################################
 
-# Variables for two files text
-file_text = ["", ""]
+# Variable for two files text
+file_texts = ["", ""]
 
 # Variable for multiple files
 files = []
@@ -35,10 +30,12 @@ data_list = []
 #######################################--GRAPHICAL USER INTERFACE--#######################################
 
 # Setting Color Theme
-customtkinter.set_appearance_mode("Dark")      # Modes: "Dark"(standard), "System", "Light"
+customtkinter.set_appearance_mode("Dark")  # Modes: "Dark"(standard), "System", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
+
 # Create App Object
+# noinspection PyMethodMayBeStatic
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
@@ -72,20 +69,22 @@ class App(customtkinter.CTk):
         self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text_color=("black", "white"),
                                                             text="Appearance Mode:", anchor="w")
         self.appearance_mode_label.grid(row=5, column=0, padx=20, pady=(10, 0))
-        self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, text_color=("black", "white"),
-                                                                        values=["Light", "Dark", "System"],
-                                                                        command=self.change_appearance_mode_event)
-        self.appearance_mode_optionemenu.grid(row=6, column=0, padx=20, pady=(10, 10))
-        self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text_color=("black", "white"), text="UI Scaling:",anchor="w")
+        self.appearance_mode_option_menu = customtkinter.CTkOptionMenu(self.sidebar_frame,
+                                                                       text_color=("black", "white"),
+                                                                       values=["Light", "Dark", "System"],
+                                                                       command=self.change_appearance_mode_event)
+        self.appearance_mode_option_menu.grid(row=6, column=0, padx=20, pady=(10, 10))
+        self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text_color=("black", "white"),
+                                                    text="UI Scaling:", anchor="w")
         self.scaling_label.grid(row=7, column=0, padx=20, pady=(10, 0))
-        self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, text_color=("black", "white"),
+        self.scaling_option_menu = customtkinter.CTkOptionMenu(self.sidebar_frame, text_color=("black", "white"),
                                                                values=["80%", "90%", "100%", "110%", "120%"],
                                                                command=self.change_scaling_event)
-        self.scaling_optionemenu.grid(row=8, column=0, padx=20, pady=(10, 20))
+        self.scaling_option_menu.grid(row=8, column=0, padx=20, pady=(10, 20))
 
         # Set Default values
-        self.appearance_mode_optionemenu.set("Dark")
-        self.scaling_optionemenu.set("100%")
+        self.appearance_mode_option_menu.set("Dark")
+        self.scaling_option_menu.set("100%")
         self.homepage()
 
     # Appearance Modes (Light Dark System)
@@ -100,10 +99,11 @@ class App(customtkinter.CTk):
     # Homepage Definition
     def homepage(self):
         frame = customtkinter.CTkFrame(self, corner_radius=10)
-        frame.grid_columnconfigure((0), weight=1)
-        frame.grid_rowconfigure((0), weight=1)
+        frame.grid_columnconfigure(0, weight=1)
+        frame.grid_rowconfigure(0, weight=1)
         frame.grid(row=0, column=1, padx=(10, 20), pady=(20, 20), rowspan=4, columnspan=3, sticky="nsew")
-        banner = customtkinter.CTkImage(light_image=Image.open("light_bg.png"), dark_image=Image.open("dark_bg.png"), size=(900, 540))
+        banner = customtkinter.CTkImage(light_image=Image.open("light_bg.png"), dark_image=Image.open("dark_bg.png"),
+                                        size=(900, 540))
         banner_label = customtkinter.CTkLabel(frame, text="", image=banner)
         banner_label.grid(row=0, column=0, padx=20, pady=(20, 20), sticky="nsew")
 
@@ -114,7 +114,7 @@ class App(customtkinter.CTk):
         frame.grid_rowconfigure((0, 1, 2, 3, 4), weight=1)
         frame.grid(row=0, column=1, padx=(10, 20), pady=(20, 20), rowspan=4, columnspan=3, sticky="nsew")
         label = customtkinter.CTkLabel(frame, text_color=("black", "white"), text="CHOOSE TWO FILES",
-                                      font=customtkinter.CTkFont(size=20, weight="bold"))
+                                       font=customtkinter.CTkFont(size=20, weight="bold"))
         label.grid(row=0, column=0, columnspan=5, padx=20, pady=(20, 20), sticky="ew")
 
         button_1_text = tk.StringVar()
@@ -144,11 +144,11 @@ class App(customtkinter.CTk):
         frame.grid(row=0, column=1, padx=(10, 20), pady=(20, 20), rowspan=4, columnspan=3, sticky="nsew")
 
         frame2 = customtkinter.CTkFrame(frame)
-        frame2.grid_columnconfigure((0), weight=1)
+        frame2.grid_columnconfigure(0, weight=1)
         frame2.grid_columnconfigure((1, 2), weight=1)
-        frame2.grid_columnconfigure((3), weight=1)
-        frame2.grid_columnconfigure((4), weight=1)
-        frame2.grid_columnconfigure((5), weight=1)
+        frame2.grid_columnconfigure(3, weight=1)
+        frame2.grid_columnconfigure(4, weight=1)
+        frame2.grid_columnconfigure(5, weight=1)
         frame2.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9), weight=1)
         frame2.grid(row=1, column=0, columnspan=5, rowspan=3, padx=20, pady=20, sticky="nsew")
 
@@ -169,6 +169,7 @@ class App(customtkinter.CTk):
         button_4 = customtkinter.CTkButton(frame, text_color=("black", "white"), text="View Complete Report",
                                            command=lambda: detailed_report())
         button_4.grid(row=4, column=1, padx=20, pady=20, sticky="ew")
+
 
 def detailed_report():
     report = tk.Toplevel()
@@ -195,6 +196,7 @@ def detailed_report():
 
     report.mainloop()
 
+
 ##############################################--FUNCTIONS--###############################################
 
 def plagiarism_percentage(text1, text2):
@@ -214,9 +216,9 @@ def duplicate_sentences(text1, text2):
     global duplicates
     duplicates.clear()
     for x in text1.split("\n"):
-        x = x.strip()
+        x.strip()
     for x in text2.split("\n"):
-        x = x.strip()
+        x.strip()
     for x in text1.split("\n"):
         for y in text2.split("\n"):
             if x == y:
@@ -236,8 +238,8 @@ def open_file1(button_text):
     ])
     if file1:
         button_text.set(os.path.basename(file1.name))
-        global file_text
-        file_text[0] = file1.read()
+        global file_texts
+        file_texts[0] = file1.read()
     else:
         button_text.set("Choose File 1")
 
@@ -254,18 +256,18 @@ def open_file2(button_text):
     ])
     if file2:
         button_text.set(os.path.basename(file2.name))
-        global file_text
-        file_text[1] = file2.read()
+        global file_texts
+        file_texts[1] = file2.read()
     else:
         button_text.set("Choose File 2")
 
 
 def two_file_compare_result(textbox):
     textbox.delete("1.0", "end")
-    global file_text
+    global file_texts
     global duplicates
-    similarity = plagiarism_percentage(file_text[0], file_text[1])
-    duplicate_sentences(file_text[0], file_text[1])
+    similarity = plagiarism_percentage(file_texts[0], file_texts[1])
+    duplicate_sentences(file_texts[0], file_texts[1])
     for x in range(len(duplicates) - 1, 0, -1):
         if duplicates[x] != "":
             textbox.insert("1.0", duplicates[x] + "\n")
@@ -303,8 +305,8 @@ def limit(k):
         return k
 
 
+files_with_unknown_data = {}
 
-files_with_uknown_data = {}
 
 def open_files(button_text):
     button_text.set("Loading..")
@@ -318,17 +320,15 @@ def open_files(button_text):
         ("C file", "*.c"),
         ("C++ file", "*.cpp")
     ])
-    
+
     if files:
         button_text.set((str(len(files)) + " Files Selected"))
-        files_with_uknown_data.clear()
+        files_with_unknown_data.clear()
         for file in files:
             file_name = file.name.split('/')[-1]  # Extract file name from the full path
-            files_with_uknown_data[file_name] = file.read()
+            files_with_unknown_data[file_name] = file.read()
     else:
         button_text.set("CHOOSE FILES")
-
-
 
 
 def multiple_comp_table(frame):
@@ -336,10 +336,10 @@ def multiple_comp_table(frame):
     data_list.append(("Nr", "File", "Candidate", "Candidate File", "Similarity"))
     for widget in frame.winfo_children():
         widget.destroy()
-        
-    data_comparation = collect_data_comparation(files_with_uknown_data)
 
-    for file_name, file_text in files_with_uknown_data.items():
+    data_comparation = collect_data_comparation(files_with_unknown_data)
+
+    for file_name, file_text in files_with_unknown_data.items():
         matches = best_matches(data_comparation, file_name, 1)
         for i, (candidate, candidateFileName, percent) in enumerate(matches, start=1):
             data_list.append((i, file_name, candidate, candidateFileName, percent))
@@ -351,10 +351,9 @@ def multiple_comp_table(frame):
             table = customtkinter.CTkEntry(frame, width=500, font=('Arial', 16))
             table.grid(row=i, column=j, sticky="nsew")
             table.insert(tk.END, data_list[i][j])
-    display_best_matches_results(files_with_uknown_data, data_comparation, 5)
-            
-            
-            
+    display_best_matches_results(files_with_unknown_data, data_comparation, 5)
+
+
 if __name__ == "__main__":
     app = App()
     app.mainloop()
