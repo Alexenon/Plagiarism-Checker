@@ -13,8 +13,8 @@ class MultipleFilePage(customtkinter.CTkFrame):
 
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
-        self.files = []                    # Variable for multiple files
-        self.data_list = []                # Store details of file and corresponding percentage
+        self.files = []  # Variable for multiple files
+        self.data_list = []  # Store details of file and corresponding percentage
         self.files_with_unknown_data = {}  # Dictionary of unknown file name and text
 
         self.frame = customtkinter.CTkFrame(self)
@@ -36,7 +36,7 @@ class MultipleFilePage(customtkinter.CTkFrame):
         self.btn_choose_files_text.set("CHOOSE FILES")
         btn_choose_files = customtkinter.CTkButton(self, text_color=("black", "white"),
                                                    textvariable=self.btn_choose_files_text,
-                                                   command=self.open_files())
+                                                   command=lambda: self.open_files())
         btn_choose_files.grid(row=0, column=1, padx=20, pady=20, sticky="ew")
 
         button_2 = customtkinter.CTkButton(self, text_color=("black", "white"), text="Check Plagiarism",
@@ -80,10 +80,12 @@ class MultipleFilePage(customtkinter.CTkFrame):
 
         # Store the comparation for table display
         data_comparation = collect_data_comparation(self.files_with_unknown_data)
+        row_index = 1
         for file_name, file_text in self.files_with_unknown_data.items():
             matches = best_matches(data_comparation, file_name, 1)
-            for i, (candidate, candidateFileName, percent) in enumerate(matches, start=1):
-                self.data_list.append((i, file_name, candidate, candidateFileName, percent))
+            for (candidate, candidateFileName, percent) in matches:
+                self.data_list.append((row_index, file_name, candidate, candidateFileName, percent))
+                row_index += 1
 
         # Display the comparation in the table
         rows = len(self.data_list)
@@ -94,13 +96,6 @@ class MultipleFilePage(customtkinter.CTkFrame):
                 table.grid(row=i, column=j, sticky="nsew")
                 table.insert(tk.END, self.data_list[i][j])
         display_best_matches_results(self.files_with_unknown_data, data_comparation, 5)
-
-    def save_report(self):
-        wb = Workbook()
-        ws = wb.active
-        for row in self.data_list:
-            ws.append(row)
-        wb.save('Report.xlsx')
 
     def detailed_report(self):
         report = tk.Toplevel()
@@ -122,5 +117,11 @@ class MultipleFilePage(customtkinter.CTkFrame):
             tree.insert('', tk.END, values=data)
 
         tree.pack(expand=True, fill='both')
-
         report.mainloop()
+
+    def save_report(self):
+        wb = Workbook()
+        ws = wb.active
+        for row in self.data_list:
+            ws.append(row)
+        wb.save('Report.xlsx')
