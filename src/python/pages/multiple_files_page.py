@@ -3,7 +3,6 @@ from tkinter.filedialog import askopenfiles
 
 import customtkinter
 from openpyxl import Workbook
-
 from python.data_comparation import *
 
 

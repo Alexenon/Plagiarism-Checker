@@ -2,29 +2,12 @@
 
 #######################################--IMPORTING LIBRARIES--############################################
 
-import tkinter as tk
-from tkinter.filedialog import askopenfile
-
 import customtkinter
-
 from PIL import Image
 
 from data_comparation import *
 from python.pages.multiple_files_page import MultipleFilePage
-
-#######################################--DECLARING GLOBAL VARIABLES--#####################################
-
-# Variable for two files text
-file_texts = ["", ""]
-
-# Variable for multiple files
-files = []
-
-# Variable to store multiple file text
-files_text = []
-
-# Variable to store duplicate sentences
-duplicates = []
+from python.pages.two_file_page import TwoFilePage
 
 #######################################--GRAPHICAL USER INTERFACE--#######################################
 
@@ -64,7 +47,7 @@ class App(customtkinter.CTk):
                                                         text="HOMEPAGE", command=self.homepage)
         self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
         self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar_frame, text_color=("black", "white"),
-                                                        text="COMPARE TWO FILES", command=self.two_file_page)
+                                                        text="COMPARE TWO FILES", command=self.display_two_file_page)
         self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
         self.sidebar_button_3 = customtkinter.CTkButton(self.sidebar_frame, text_color=("black", "white"),
                                                         text="MULTIPLE COMPARE",
@@ -113,33 +96,9 @@ class App(customtkinter.CTk):
         banner_label.grid(row=0, column=0, padx=20, pady=(20, 20), sticky="nsew")
 
     # Two File Comparison Page
-    def two_file_page(self):
-        frame = customtkinter.CTkFrame(self, corner_radius=10)
-        frame.grid_columnconfigure((0, 1, 2, 3, 4), weight=1)
-        frame.grid_rowconfigure((0, 1, 2, 3, 4), weight=1)
+    def display_two_file_page(self):
+        frame = TwoFilePage(self)
         frame.grid(row=0, column=1, padx=(10, 20), pady=(20, 20), rowspan=4, columnspan=3, sticky="nsew")
-        label = customtkinter.CTkLabel(frame, text_color=("black", "white"), text="CHOOSE TWO FILES",
-                                       font=customtkinter.CTkFont(size=20, weight="bold"))
-        label.grid(row=0, column=0, columnspan=5, padx=20, pady=(20, 20), sticky="ew")
-
-        button_1_text = tk.StringVar()
-        button_1_text.set("CHOOSE FILE 1")
-        button_1 = customtkinter.CTkButton(frame, text_color=("black", "white"), textvariable=button_1_text,
-                                           command=lambda: open_file1(button_1_text))
-        button_1.grid(row=1, column=1, padx=20, pady=20, sticky="ew")
-
-        button_2_text = tk.StringVar()
-        button_2_text.set("CHOOSE FILE 2")
-        button_2 = customtkinter.CTkButton(frame, text_color=("black", "white"), textvariable=button_2_text,
-                                           command=lambda: open_file2(button_2_text))
-        button_2.grid(row=1, column=3, padx=20, pady=20, sticky="ew")
-
-        button_3 = customtkinter.CTkButton(frame, text_color=("black", "white"), text="CHECK PLAGIARISM",
-                                           command=lambda: two_file_compare_result(textbox))
-        button_3.grid(row=2, column=2, padx=20, pady=20, sticky="ew")
-
-        textbox = customtkinter.CTkTextbox(frame)
-        textbox.grid(row=3, column=0, columnspan=5, rowspan=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
 
     def display_multiple_file_page(self):
         multiple_file_page = MultipleFilePage(self)
@@ -147,103 +106,6 @@ class App(customtkinter.CTk):
 
 
 ##############################################--FUNCTIONS--###############################################
-
-
-def plagiarism_percentage(text1, text2):
-    sentences1 = text1.split("\n")
-    sentences2 = text2.split("\n")
-    count = 0
-    for x in sentences1:
-        for y in sentences2:
-            if x == y and x != "":
-                count += len(x)
-                break
-    similarity = count * 100 / (len(text1) - len(sentences1))
-    return int(limit(similarity))
-
-
-def duplicate_sentences(text1, text2):
-    global duplicates
-    duplicates.clear()
-    for x in text1.split("\n"):
-        x.strip()
-    for x in text2.split("\n"):
-        x.strip()
-    for x in text1.split("\n"):
-        for y in text2.split("\n"):
-            if x == y:
-                duplicates.append(x)
-                break
-
-
-def open_file1(button_text):
-    button_text.set("Loading..")
-    file1 = askopenfile(mode='r', title="Choose a File", filetypes=[
-        ("All files", "*"),
-        ("text file", "*.txt"),
-        ("java File", "*.java"),
-        ("python file", "*.py"),
-        ("C file", "*.c"),
-        ("C++ file", "*.cpp")
-    ])
-    if file1:
-        button_text.set(os.path.basename(file1.name))
-        global file_texts
-        file_texts[0] = file1.read()
-    else:
-        button_text.set("Choose File 1")
-
-
-def open_file2(button_text):
-    button_text.set("Loading..")
-    file2 = askopenfile(mode='r', title="Choose a File", filetypes=[
-        ("All files", "*"),
-        ("text file", "*.txt"),
-        ("java File", "*.java"),
-        ("python file", "*.py"),
-        ("C file", "*.c"),
-        ("C++ file", "*.cpp")
-    ])
-    if file2:
-        button_text.set(os.path.basename(file2.name))
-        global file_texts
-        file_texts[1] = file2.read()
-    else:
-        button_text.set("Choose File 2")
-
-
-def two_file_compare_result(textbox):
-    textbox.delete("1.0", "end")
-    global file_texts
-    global duplicates
-    similarity = plagiarism_percentage(file_texts[0], file_texts[1])
-    duplicate_sentences(file_texts[0], file_texts[1])
-    for x in range(len(duplicates) - 1, 0, -1):
-        if duplicates[x] != "":
-            textbox.insert("1.0", duplicates[x] + "\n")
-    textbox.insert("1.0", "\n\nDuplicate Sentences Are:\n")
-    textbox.insert("1.0", "Similarity Percentage is : " + str(similarity))
-
-
-def multiple_compare_result(textbox):
-    textbox.delete("1.0", "end")
-    global files
-    global files_text
-    for x in files_text:
-        a = files_text.index(x)
-        for y in files_text:
-            b = files_text.index(y)
-            similarity = plagiarism_percentage(x, y)
-            file_name1 = os.path.basename(files[a].name)
-            file_name2 = os.path.basename(files[b].name)
-            textbox.insert("1.0", file_name1 + "\t and \t" + file_name2 + "\t  -  \t" + str(similarity) + "\n")
-
-
-def limit(k):
-    if k > 100:
-        return 100
-    else:
-        return k
 
 
 if __name__ == "__main__":
