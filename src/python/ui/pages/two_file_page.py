@@ -3,7 +3,7 @@ from tkinter.filedialog import askopenfile
 
 import customtkinter
 
-from python.data_comparation import *
+from python.utils.data_comparation import *
 
 
 class TwoFilePage(customtkinter.CTkFrame):
