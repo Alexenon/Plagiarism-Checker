@@ -10,7 +10,7 @@ import customtkinter
 from PIL import Image
 
 from data_comparation import *
-from multiple_files_page import MultipleFilePage
+from python.pages.multiple_files_page import MultipleFilePage
 
 #######################################--DECLARING GLOBAL VARIABLES--#####################################
 
@@ -106,7 +106,8 @@ class App(customtkinter.CTk):
         frame.grid_columnconfigure(0, weight=1)
         frame.grid_rowconfigure(0, weight=1)
         frame.grid(row=0, column=1, padx=(10, 20), pady=(20, 20), rowspan=4, columnspan=3, sticky="nsew")
-        banner = customtkinter.CTkImage(light_image=Image.open("light_bg.png"), dark_image=Image.open("dark_bg.png"),
+        banner = customtkinter.CTkImage(light_image=Image.open(os.path.join("src", "resources", "light_bg.png")),
+                                        dark_image=Image.open(os.path.join("src", "resources", "dark_bg.png")),
                                         size=(900, 540))
         banner_label = customtkinter.CTkLabel(frame, text="", image=banner)
         banner_label.grid(row=0, column=0, padx=20, pady=(20, 20), sticky="nsew")

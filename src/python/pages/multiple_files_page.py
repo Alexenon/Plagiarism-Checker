@@ -4,7 +4,7 @@ from tkinter.filedialog import askopenfiles
 import customtkinter
 from openpyxl import Workbook
 
-from data_comparation import *
+from python.data_comparation import *
 
 
 class MultipleFilePage(customtkinter.CTkFrame):
