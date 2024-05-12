@@ -86,11 +86,10 @@ class App(customtkinter.CTk):
         banner_label = customtkinter.CTkLabel(frame, text="", image=banner)
         banner_label.grid(row=0, column=0, padx=20, pady=(20, 20), sticky="nsew")
 
-    # Two File Comparison Page
     def display_two_file_page(self):
         frame = TwoFilePage(self)
         frame.grid(row=0, column=1, padx=(10, 20), pady=(20, 20), rowspan=4, columnspan=3, sticky="nsew")
 
     def display_multiple_file_page(self):
-        multiple_file_page = MultipleFilePage(self)
-        multiple_file_page.grid(row=0, column=1, padx=(10, 20), pady=(20, 20), rowspan=4, columnspan=3, sticky="nsew")
+        frame = MultipleFilePage(self)
+        frame.grid(row=0, column=1, padx=(10, 20), pady=(20, 20), rowspan=4, columnspan=3, sticky="nsew")
